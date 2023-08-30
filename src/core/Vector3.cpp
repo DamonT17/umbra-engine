@@ -8,40 +8,34 @@
  * @section Constructors
  */
 
-Vector3::Vector3() {
-    x = 0.0f;
-    y = 0.0f;
-    z = 0.0f;
-}
+template <typename T>
+Vector3<T>::Vector3() : x(T(0)), y(T(0)), z(T(0)) {}
 
-Vector3::Vector3(float x, float y) {
-    this->x = x;
-    this->y = y;
-    this->z = 0.0f;
-}
+template <typename T>
+Vector3<T>::Vector3(T x, T y) : x(x), y(y), z(T(0)) {}
 
-Vector3::Vector3(float x, float y, float z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-}
+template <typename T>
+Vector3<T>::Vector3(T x, T y, T z) : x(x), y(y), z(z) {}
 
 /**
  * @section Properties
  * @subsection Instance properties
  */
 
-const float Vector3::magnitude() const {
+template <typename T>
+const T Vector3<T>::magnitude() const {
     return std::sqrt(x * x + y * y + z * z);
 }
 
-const float Vector3::sqrMagnitude() const {
+template <typename T>
+const T Vector3<T>::sqrMagnitude() const {
     return x * x + y * y + z * z;
 }
 
-const Vector3 Vector3::normalized() const {
-    float magnitude = this->magnitude();
-    return Vector3(x / magnitude, y / magnitude, z / magnitude);
+template <typename T>
+const Vector3<T> Vector3<T>::normalized() const {
+    T magnitude = this->magnitude();
+    return Vector3<T>(x / magnitude, y / magnitude, z / magnitude);
 }
 
 /**
@@ -49,52 +43,62 @@ const Vector3 Vector3::normalized() const {
  * @subsection Static properties
  */
 
-Vector3 Vector3::Back() {
-    return Vector3(0.0f, 0.0f, -1.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Back() {
+    return Vector3<T>(T(0), T(0), T(-1));
 }
 
-Vector3 Vector3::Down() {
-    return Vector3(0.0f, -1.0f, 0.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Down() {
+    return Vector3<T>(T(0), T(-1), T(0));
 }
 
-Vector3 Vector3::Forward() {
-    return Vector3(0.0f, 0.0f, 1.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Forward() {
+    return Vector3<T>(T(0), T(0), T(1));
 }
 
-Vector3 Vector3::Left() {
-    return Vector3(-1.0f, 0.0f, 0.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Left() {
+    return Vector3<T>(T(-1), T(0), T(0));
 }
 
-Vector3 Vector3::NegativeInfinity() {
-    return Vector3(
-        -std::numeric_limits<float>::infinity(),
-        -std::numeric_limits<float>::infinity(),
-        -std::numeric_limits<float>::infinity()
+template <typename T>
+Vector3<T> Vector3<T>::NegativeInfinity() {
+    return Vector3<T>(
+        -std::numeric_limits<T>::infinity(),
+        -std::numeric_limits<T>::infinity(),
+        -std::numeric_limits<T>::infinity()
     );
 }
 
-Vector3 Vector3::One() {
-    return Vector3(1.0f, 1.0f, 1.0f);
+template <typename T>
+Vector3<T> Vector3<T>::One() {
+    return Vector3<T>(T(1), T(1), T(1));
 }
 
-Vector3 Vector3::PositiveInfinity() {
-    return Vector3(
-        std::numeric_limits<float>::infinity(),
-        std::numeric_limits<float>::infinity(),
-        std::numeric_limits<float>::infinity()
+template <typename T>
+Vector3<T> Vector3<T>::PositiveInfinity() {
+    return Vector3<T>(
+        std::numeric_limits<T>::infinity(),
+        std::numeric_limits<T>::infinity(),
+        std::numeric_limits<T>::infinity()
     );
 }
 
-Vector3 Vector3::Right() {
-    return Vector3(1.0f, 0.0f, 0.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Right() {
+    return Vector3<T>(T(1), T(0), T(0));
 }
 
-Vector3 Vector3::Up() {
-    return Vector3(0.0f, 1.0f, 0.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Up() {
+    return Vector3<T>(T(0), T(1), T(0));
 }
 
-Vector3 Vector3::Zero() {
-    return Vector3(0.0f, 0.0f, 0.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Zero() {
+    return Vector3<T>(T(0), T(0), T(0));
 }
 
 /**
@@ -102,17 +106,20 @@ Vector3 Vector3::Zero() {
  * @subsection Public methods
  */
 
-bool Vector3::equals(const Vector3 &other) const {
+template <typename T>
+bool Vector3<T>::equals(const Vector3<T>& other) const {
     return x == other.x && y == other.y && z == other.z;
 }
 
-void Vector3::set(float x, float y, float z) {
+template <typename T>
+void Vector3<T>::set(T x, T y, T z) {
     this->x = x;
     this->y = y;
     this->z = z;
 }
 
-std::string Vector3::toString() const {
+template <typename T>
+std::string Vector3<T>::toString() const {
     return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
 }
 
@@ -121,11 +128,13 @@ std::string Vector3::toString() const {
  * @subsection Static methods
  */
 
-float Vector3::Angle(const Vector3 &from, const Vector3 &to) {
-    return acos(Vector3::Dot(from, to) / (from.magnitude() * to.magnitude()));
+template <typename T>
+T Vector3<T>::Angle(const Vector3<T>& from, const Vector3<T>& to) {
+    return std::acos(Vector3<T>::Dot(from, to) / (from.magnitude() * to.magnitude()));
 }
 
-Vector3 Vector3::ClampMagnitude(const Vector3 &vector, float maxLength) {
+template <typename T>
+Vector3<T> Vector3<T>::ClampMagnitude(const Vector3<T>& vector, T maxLength) {
     if (vector.magnitude() > maxLength) {
         return vector.normalized() * maxLength;
     }
@@ -133,112 +142,132 @@ Vector3 Vector3::ClampMagnitude(const Vector3 &vector, float maxLength) {
     return vector;
 }
 
-Vector3 Vector3::Cross(const Vector3 &lhs, const Vector3 &rhs) {
-    return Vector3(
+template <typename T>
+Vector3<T> Vector3<T>::Cross(const Vector3<T>& lhs, const Vector3<T>& rhs) {
+    return Vector3<T>(
         lhs.y * rhs.z - lhs.z * rhs.y,
         lhs.z * rhs.x - lhs.x * rhs.z,
         lhs.x * rhs.y - lhs.y * rhs.x
     );
 }
 
-float Vector3::Distance(const Vector3 &a, const Vector3 &b) {
+template <typename T>
+T Vector3<T>::Distance(const Vector3<T>& a, const Vector3<T>& b) {
     return (a - b).magnitude();
 }
 
-float Vector3::Dot(const Vector3 &lhs, const Vector3 &rhs) {
+template <typename T>
+T Vector3<T>::Dot(const Vector3<T>& lhs, const Vector3<T>& rhs) {
     return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
 }
 
-Vector3 Vector3::Lerp(const Vector3 &a, const Vector3 &b, float t) {
-    t = std::clamp(t, 0.0f, 1.0f);
+template <typename T>
+Vector3<T> Vector3<T>::Lerp(const Vector3<T>& a, const Vector3<T>& b, T t) {
+    t = std::clamp(t, T(0), T(1));
     return a + (b - a) * t;
 }
 
-Vector3 Vector3::LerpUnclamped(const Vector3 &a, const Vector3 &b, float t) {
+template <typename T>
+Vector3<T> Vector3<T>::LerpUnclamped(const Vector3<T>& a, const Vector3<T>& b, T t) {
     return a + (b - a) * t;
 }
 
-Vector3 Vector3::Max(const Vector3 &lhs, const Vector3 &rhs) {
-    return Vector3(
+template <typename T>
+Vector3<T> Vector3<T>::Max(const Vector3<T>& lhs, const Vector3<T>& rhs) {
+    return Vector3<T>(
         std::max(lhs.x, rhs.x),
         std::max(lhs.y, rhs.y),
         std::max(lhs.z, rhs.z)
     );
 }
 
-Vector3 Vector3::Min(const Vector3 &lhs, const Vector3 &rhs) {
-    return Vector3(
+template <typename T>
+Vector3<T> Vector3<T>::Min(const Vector3<T>& lhs, const Vector3<T>& rhs) {
+    return Vector3<T>(
         std::min(lhs.x, rhs.x),
         std::min(lhs.y, rhs.y),
         std::min(lhs.z, rhs.z)
     );
 }
 
-Vector3 Vector3::MoveTowards(const Vector3 &current, const Vector3 &target, float maxDistanceDelta) {
-    Vector3 delta = target - current;
+template <typename T>
+Vector3<T> Vector3<T>::MoveTowards(const Vector3<T>& current, const Vector3<T>& target, T maxDistanceDelta) {
+    Vector3<T> delta = target - current;
     float sqrDeltaMagnitude = delta.sqrMagnitude();
 
-    if (sqrDeltaMagnitude == 0.0f ||
-        (maxDistanceDelta >= 0.0f && sqrDeltaMagnitude <= maxDistanceDelta * maxDistanceDelta)) {
+    if (sqrDeltaMagnitude == T(0) ||
+        (maxDistanceDelta >= T(0) && sqrDeltaMagnitude <= maxDistanceDelta * maxDistanceDelta)) {
         return target;
     }
 
     return current + delta * maxDistanceDelta / sqrt(sqrDeltaMagnitude);
 }
 
-Vector3 Vector3::Normalize(const Vector3 &value) {
+template <typename T>
+Vector3<T> Vector3<T>::Normalize(const Vector3<T>& value) {
     return value.normalized();
 }
 
-void Vector3::OrthoNormalize(Vector3 &normal, Vector3 &tangent) {
+template <typename T>
+void Vector3<T>::OrthoNormalize(Vector3<T>& normal, Vector3<T>& tangent) {
     normal = normal.normalized();
-    tangent = Vector3::ProjectOnPlane(tangent, normal).normalized();
+    tangent = Vector3<T>::ProjectOnPlane(tangent, normal).normalized();
 }
 
-Vector3 Vector3::Project(const Vector3 &vector, const Vector3 &onNormal) {
-    return onNormal * Vector3::Dot(vector, onNormal) / onNormal.sqrMagnitude();
+template <typename T>
+Vector3<T> Vector3<T>::Project(const Vector3<T>& vector, const Vector3<T>& onNormal) {
+    return onNormal * Vector3<T>::Dot(vector, onNormal) / onNormal.sqrMagnitude();
 }
 
-Vector3 Vector3::ProjectOnPlane(const Vector3 &vector, const Vector3 &planeNormal) {
-    return vector - Vector3::Project(vector, planeNormal);
+template <typename T>
+Vector3<T> Vector3<T>::ProjectOnPlane(const Vector3<T>& vector, const Vector3<T>& planeNormal) {
+    return vector - Vector3<T>::Project(vector, planeNormal);
 }
 
-Vector3 Vector3::Reflect(const Vector3 &inDirection, const Vector3 &inNormal) {
-    return inDirection - 2.0f * Vector3::Dot(inDirection, inNormal) * inNormal;
+template <typename T>
+Vector3<T> Vector3<T>::Reflect(const Vector3<T>& inDirection, const Vector3<T>& inNormal) {
+    return inDirection - T(2) * Vector3<T>::Dot(inDirection, inNormal) * inNormal;
 }
 
-Vector3 Vector3::RotateTowards(const Vector3 &current, const Vector3 &target, float maxRadiansDelta,
-                               float maxMagnitudeDelta) {
-    float angle = Vector3::Angle(current, target);
-    if (angle == 0.0f) {
+template <typename T>
+Vector3<T> Vector3<T>::RotateTowards(const Vector3<T>& current, const Vector3<T>& target, T maxRadiansDelta,
+                               T maxMagnitudeDelta) {
+    T angle = Vector3<T>::Angle(current, target);
+    if (angle == T(0)) {
         return target;
     }
 
-    float t = std::min(1.0f, maxRadiansDelta / angle);
-    return Vector3::SlerpUnclamped(current, target, t).normalized() * Vector3::MoveTowards(current, target,
+    T t = std::min(T(1), maxRadiansDelta / angle);
+    return Vector3<T>::SlerpUnclamped(current, target, t).normalized() * Vector3<T>::MoveTowards(current, target,
                                                                                            maxMagnitudeDelta);
 }
 
-Vector3 Vector3::Scale(const Vector3 &a, const Vector3 &b) {
-    return Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+template <typename T>
+Vector3<T> Vector3<T>::Scale(const Vector3<T>& a, const Vector3<T>& b) {
+    return Vector3<T>(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
-float Vector3::SignedAngle(const Vector3 &from, const Vector3 &to, const Vector3 &axis) {
-    float angle = Vector3::Angle(from, to);
-    float sign = Vector3::Dot(axis, Vector3::Cross(from, to)) < 0.0f ? -1.0f : 1.0f;
+template <typename T>
+T Vector3<T>::SignedAngle(const Vector3<T>& from, const Vector3<T>& to, const Vector3<T>& axis) {
+    T angle = Vector3<T>::Angle(from, to);
+    T sign = Vector3<T>::Dot(axis, Vector3<T>::Cross(from, to)) < T(0) ? T(-1) : T(1);
     return angle * sign;
 }
 
-Vector3 Vector3::Slerp(const Vector3 &a, const Vector3 &b, float t) {
-    t = std::clamp(t, 0.0f, 1.0f);
-    float angle = Vector3::Angle(a, b);
-    return (std::sin((1.0f - t) * angle) / std::sin(angle)) * a +
-        (std::sin(t * angle) / std::sin(angle)) * b;
+template <typename T>
+Vector3<T> Vector3<T>::Slerp(const Vector3<T>& a, const Vector3<T>& b, T t) {
+    t = std::clamp(t, T(0), T(1));
+    T angle = Vector3<T>::Angle(a, b);
+
+    return (std::sin((T(1) - t) * angle) / std::sin(angle)) * a + (std::sin(t * angle) / std::sin(angle)) * b;
 }
 
-Vector3 Vector3::SlerpUnclamped(const Vector3 &a, const Vector3 &b, float t) {
-    float angle = Vector3::Angle(a, b);
-    return (sin((1.0f - t) * angle) / sin(angle)) * a + (sin(t * angle) / sin(angle)) * b;
+template <typename T>
+Vector3<T> Vector3<T>::SlerpUnclamped(const Vector3<T>& a, const Vector3<T>& b, T t) {
+    T angle = Vector3<T>::Angle(a, b);
+
+    return (std::sin((T(1) - t) * angle) / std::sin(angle)) * a +
+        (std::sin(t * angle) / std::sin(angle)) * b;
 }
 
 /**
@@ -246,47 +275,56 @@ Vector3 Vector3::SlerpUnclamped(const Vector3 &a, const Vector3 &b, float t) {
  * @subsection Instance operators
  */
 
-Vector3 Vector3::operator+(const Vector3 &other) const {
-    return Vector3(x + other.x, y + other.y, z + other.z);
+template <typename T>
+Vector3<T> Vector3<T>::operator+(const Vector3<T>& other) const {
+    return Vector3<T>(x + other.x, y + other.y, z + other.z);
 }
 
-Vector3 Vector3::operator-(const Vector3 &other) const {
-    return Vector3(x - other.x, y - other.y, z - other.z);
+template <typename T>
+Vector3<T> Vector3<T>::operator-(const Vector3<T>& other) const {
+    return Vector3<T>(x - other.x, y - other.y, z - other.z);
 }
 
-Vector3 Vector3::operator*(float scalar) const {
-    return Vector3(x * scalar, y * scalar, z * scalar);
+template <typename T>
+Vector3<T> Vector3<T>::operator*(T scalar) const {
+    return Vector3<T>(x * scalar, y * scalar, z * scalar);
 }
 
-Vector3 Vector3::operator*(const Vector3 &other) const {
-    return Vector3(x * other.x, y * other.y, z * other.z);
+template <typename T>
+Vector3<T> Vector3<T>::operator*(const Vector3<T>& other) const {
+    return Vector3<T>(x * other.x, y * other.y, z * other.z);
 }
 
-Vector3 Vector3::operator/(float scalar) const {
-    if (scalar == 0.0f) {
+template <typename T>
+Vector3<T> Vector3<T>::operator/(T scalar) const {
+    if (scalar == T(0)) {
         throw std::overflow_error("Divide by zero exception");
     }
 
-    return Vector3(x / scalar, y / scalar, z / scalar);
+    return Vector3<T>(x / scalar, y / scalar, z / scalar);
 }
 
-Vector3 Vector3::operator/(const Vector3 &other) const {
-    if (other.x == 0.0f || other.y == 0.0f || other.z == 0.0f) {
+template <typename T>
+Vector3<T> Vector3<T>::operator/(const Vector3<T>& other) const {
+    if (other.x == T(0) || other.y == T(0) || other.z == T(0)) {
         throw std::overflow_error("Divide by zero exception");
     }
 
-    return Vector3(x / other.x, y / other.y, z / other.z);
+    return Vector3<T>(x / other.x, y / other.y, z / other.z);
 }
 
-bool Vector3::operator==(const Vector3 &other) const {
-    return Vector3(x - other.x, y - other.y, z - other.z).sqrMagnitude() < 1e-5;
+template <typename T>
+bool Vector3<T>::operator==(const Vector3<T>& other) const {
+    return Vector3<T>(x - other.x, y - other.y, z - other.z).sqrMagnitude() < T(1e-5);
 }
 
-bool Vector3::operator!=(const Vector3 &other) const {
-    return Vector3(x - other.x, y - other.y, z - other.z).sqrMagnitude() >= 1e-5;
+template <typename T>
+bool Vector3<T>::operator!=(const Vector3<T>& other) const {
+    return Vector3<T>(x - other.x, y - other.y, z - other.z).sqrMagnitude() >= T(1e-5);
 }
 
-float &Vector3::operator[](int index) {
+template <typename T>
+T& Vector3<T>::operator[](int index) {
     switch (index) {
         case 0:
             return x;
@@ -299,7 +337,8 @@ float &Vector3::operator[](int index) {
     }
 }
 
-const float &Vector3::operator[](int index) const {
+template <typename T>
+const T& Vector3<T>::operator[](int index) const {
     switch (index) {
         case 0:
             return x;
@@ -317,10 +356,16 @@ const float &Vector3::operator[](int index) const {
  * @subsection Free operators
  */
 
-Vector3 operator*(const Vector3& a, float scalar) {
-    return Vector3(a.x * scalar, a.y * scalar, a.z * scalar);
+template <typename T>
+Vector3<T> operator*(const Vector3<T>& a, T scalar) {
+    return Vector3<T>(a.x * scalar, a.y * scalar, a.z * scalar);
 }
 
-Vector3 operator*(float scalar, const Vector3& a) {
-    return Vector3(scalar * a.x, scalar * a.y, scalar * a.z);
+template <typename T>
+Vector3<T> operator*(T scalar, const Vector3<T>& a) {
+    return Vector3<T>(scalar * a.x, scalar * a.y, scalar * a.z);
 }
+
+template struct Vector3<float>;
+template struct Vector3<double>;
+template struct Vector3<long double>;

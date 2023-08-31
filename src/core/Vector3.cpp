@@ -366,6 +366,10 @@ Vector3<T> operator*(T scalar, const Vector3<T>& a) {
     return Vector3<T>(scalar * a.x, scalar * a.y, scalar * a.z);
 }
 
+/**
+ * @section Template instantiations
+ */
+
 template struct Vector3<float>;
 template struct Vector3<double>;
 template struct Vector3<long double>;

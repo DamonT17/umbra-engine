@@ -48,3 +48,13 @@
  * @section Operators
  * @subsection Free operators
  */
+
+
+
+/**
+* @section Template instantiations
+*/
+
+template struct Matrix<float>;
+template struct Matrix<double>;
+template struct Matrix<long double>;

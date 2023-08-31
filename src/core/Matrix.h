@@ -5,8 +5,10 @@
 #ifndef UMBRA_ENGINE_MATRIX_H
 #define UMBRA_ENGINE_MATRIX_H
 
-// TODO: #include statements
+#include <string>
+
 #include "Vector3.h"
+#include "Vector4.h"
 
 /**
  * @struct Matrix
@@ -22,7 +24,11 @@ struct Matrix {
  * @subsection Instance properties
  */
 
-
+    /**
+     * @property m
+     * @brief The matrix elements.
+     */
+    T m[4][4];
 
 /**
  * @section Properties
@@ -75,9 +81,14 @@ struct Matrix {
     Matrix<T>();
 
     /**
-     *
+     * @brief Creates a new matrix and sets all elements to the given value.
      */
-    //TODO: Create constructor that takes input values
+    Matrix<T>(T value);
+
+    /**
+     * @brief Creates a new matrix and sets all elements to the given values in the 2D array.
+     */
+    Matrix<T>(const T m[4][4]);
 
 /**
  * @section Properties
@@ -104,10 +115,59 @@ struct Matrix {
  */
 
     /**
+     * @brief Get a column of this matrix.
+     * @param index The index of the column to get.
+     * @return Vector4<T>
+     *
+     * @details Returns a column of this matrix as a vector. index must be from 0 to 3.
+     */
+    Vector4<T> getColumn(int index);
+
+    /**
      * @brief Returns the position of this matrix.
      * @return Vector3<T>
      */
     Vector3<T> getPosition();
+
+    /**
+     * @brief Get a row of this matrix.
+     * @param index The index of the row to get.
+     * @return Vector4<T>
+     *
+     * @details Returns a row of this matrix as a vector. index must be from 0 to 3.
+     */
+    Vector4<T> getRow(int index);
+
+    /**
+     * @brief Sets a column of this matrix.
+     * @param index The index of the column to set.
+     * @param vector The vector to set the column to.
+     *
+     * @details Sets a column of this matrix from a Vector4. index must be from 0 to 3.
+     */
+    void setColumn(int index, const Vector4<T>& vector);
+
+    /**
+     * @brief Sets a row of this matrix.
+     * @param index The index of the row to set.
+     * @param vector The vector to set the row to.
+     * @return void
+     *
+     * @details Sets a row of this matrix from a Vector4. index must be from 0 to 3.
+     */
+    void setRow(int index, const Vector4<T>& vector);
+
+    /**
+     * @brief Returns a formatted string for this matrix.
+     * @return std::string
+     */
+    std::string toString();
+
+    /**
+     * @brief Checks if this matrix is a valid transform matrix.
+     * @return bool
+     */
+    bool validateTRS();
 
 /**
  * @section Methods
@@ -197,9 +257,9 @@ struct Matrix {
     /**
      * @brief Transforms a vector by a matrix.
      * @param vector The vector to transform.
-     * @return Vector4<T>
+     * @return Matrix<T>
      */
-    //TODO: Create Vector4 struct
+    Matrix<T>& operator*(const Vector4<T>& vector) const;
 };
 
 #endif //UMBRA_ENGINE_MATRIX_H

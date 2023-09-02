@@ -83,12 +83,12 @@ struct Matrix {
     /**
      * @brief Creates a new matrix and sets all elements to the given value.
      */
-    Matrix<T>(T value);
+    Matrix<T>(const T value);
 
     /**
      * @brief Creates a new matrix and sets all elements to the given values in the 2D array.
      */
-    Matrix<T>(const T m[4][4]);
+    Matrix<T>(const T values[4][4]);
 
 /**
  * @section Properties
@@ -167,7 +167,7 @@ struct Matrix {
      * @brief Checks if this matrix is a valid transform matrix.
      * @return bool
      */
-    bool validateTRS();
+    bool isValidTransform();
 
 /**
  * @section Methods

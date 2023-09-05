@@ -53,8 +53,8 @@ Vector2<T> Vector2<T>::Left() {
 template <typename T>
 Vector2<T> Vector2<T>::NegativeInfinity() {
     return Vector2<T>(
-            -std::numeric_limits<T>::infinity(),
-            -std::numeric_limits<T>::infinity()
+        -std::numeric_limits<T>::infinity(),
+        -std::numeric_limits<T>::infinity()
     );
 }
 
@@ -66,8 +66,8 @@ Vector2<T> Vector2<T>::One() {
 template <typename T>
 Vector2<T> Vector2<T>::PositiveInfinity() {
     return Vector2<T>(
-            std::numeric_limits<T>::infinity(),
-            std::numeric_limits<T>::infinity()
+        std::numeric_limits<T>::infinity(),
+        std::numeric_limits<T>::infinity()
     );
 }
 
@@ -150,16 +150,16 @@ Vector2<T> Vector2<T>::LerpUnclamped(const Vector2<T>& a, const Vector2<T>& b, T
 template <typename T>
 Vector2<T> Vector2<T>::Max(const Vector2<T>& lhs, const Vector2<T>& rhs) {
     return Vector2<T>(
-            std::max(lhs.x, rhs.x),
-            std::max(lhs.y, rhs.y)
+        std::max(lhs.x, rhs.x),
+        std::max(lhs.y, rhs.y)
     );
 }
 
 template <typename T>
 Vector2<T> Vector2<T>::Min(const Vector2<T>& lhs, const Vector2<T>& rhs) {
     return Vector2<T>(
-            std::min(lhs.x, rhs.x),
-            std::min(lhs.y, rhs.y)
+        std::min(lhs.x, rhs.x),
+        std::min(lhs.y, rhs.y)
     );
 }
 

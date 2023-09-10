@@ -126,6 +126,9 @@ struct Matrix {
     /**
      * @brief Returns the position of this matrix.
      * @return Vector3<T>
+     *
+     * @details Returns the position of this matrix as a Vector3<T>. The position of a matrix is in the last row (row
+     * major).
      */
     Vector3<T> getPosition();
 

@@ -11,10 +11,9 @@
 
 /**
  * @struct Vector3<T>
- * @brief Representation of 3D vectors and points with floating point precision.
+ * @brief Representation of 3D vectors and points.
  *
- * @details This structure is used throughout the engine to represent 3D vectors and points with floating point
- * precision.
+ * @details This structure is used throughout the engine to represent 3D vectors and points.
  */
 
 template <typename T>
@@ -70,7 +69,7 @@ struct Vector3 {
      * @brief Returns this vector with a magnitude of 1 (read-only).
      * @return Vector3
      *
-     * @details When normalized, a vector keeps the same direction but its length is 1.0. Note that the current vector
+     * @details When normalized, a vector keeps the same direction but its length is 1. Note that the current vector
      * is unchanged and a new normalized vector is returned. If you want to normalize the current vector, use Normalize
      * function.
      */
@@ -438,6 +437,12 @@ struct Vector3 {
      * @return Vector3<T>
      */
     Vector3<T> operator+(const Vector3<T>& other) const;
+
+    /**
+     * @brief Negates a vector.
+     * @return Vector3<T>
+     */
+    Vector3<T> operator-() const;
 
     /**
      * @brief Subtracts one vector from another.

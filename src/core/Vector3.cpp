@@ -281,6 +281,11 @@ Vector3<T> Vector3<T>::operator+(const Vector3<T>& other) const {
 }
 
 template <typename T>
+Vector3<T> Vector3<T>::operator-() const {
+    return Vector3<T>(-x, -y, -z);
+}
+
+template <typename T>
 Vector3<T> Vector3<T>::operator-(const Vector3<T>& other) const {
     return Vector3<T>(x - other.x, y - other.y, z - other.z);
 }
@@ -365,6 +370,10 @@ template <typename T>
 Vector3<T> operator*(T scalar, const Vector3<T>& a) {
     return Vector3<T>(scalar * a.x, scalar * a.y, scalar * a.z);
 }
+
+/**
+ * @section Template instantiations
+ */
 
 template struct Vector3<float>;
 template struct Vector3<double>;

@@ -1,0 +1,4 @@
+#define UmbraEngine_VERSION_MAJOR @UmbraEngine_VERSION_MAJOR@
+#define UmbraEngine_VERSION_MINOR @UmbraEngine_VERSION_MINOR@
+#define UmbraEngine_VERSION_PATCH @UmbraEngine_VERSION_PATCH@
+#define UmbraEngine_VERSION_TWEAK @UmbraEngine_VERSION_TWEAK@

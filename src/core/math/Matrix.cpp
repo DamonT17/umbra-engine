@@ -10,18 +10,18 @@
 
 template <typename T>
 Matrix<T>::Matrix() {
-    for (int i = 0; i < 4; ++i) {
+    for (auto & i : m) {
         for (int j = 0; j < 4; ++j) {
-            m[i][j] = T(0);
+            i[j] = T(0);
         }
     }
 }
 
 template <typename T>
 Matrix<T>::Matrix(const T value) {
-    for (int i = 0; i < 4; ++i) {
+    for (auto & i : m) {
         for (int j = 0; j < 4; ++j) {
-            m[i][j] = T(value);
+            i[j] = T(value);
         }
     }
 }
@@ -31,13 +31,26 @@ Matrix<T>::Matrix(const T values[4][4]) {
     memcpy(m, values, sizeof(T) * 16);
 }
 
+template <typename T>
+Matrix<T>::Matrix(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w) {
+    Matrix<T>::setRow(0, x);
+    Matrix<T>::setRow(1, y);
+    Matrix<T>::setRow(2, z);
+    Matrix<T>::setRow(3, w);
+}
+
+template <typename T>
+Matrix<T>::Matrix(const Matrix<T>& other) {
+    memcpy(m, other.m, sizeof(T) * 16);
+}
+
 /**
  * @section Properties
  * @subsection Instance properties
  */
 
 template <typename T>
-const T Matrix<T>::determinant() const {
+T Matrix<T>::determinant() const {
     T det = 0;
     for (int i = 0; i < 4; ++i) {
         det += m[0][i] * m[1][(i + 1) % 4] * m[2][(i + 2) % 4] * m[3][(i + 3) % 4];
@@ -48,22 +61,40 @@ const T Matrix<T>::determinant() const {
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::inverse() const {
-    // TODO: Implement
-}
-
-template <typename T>
-const bool Matrix<T>::isIdentity() const {
-    if (this == Matrix<T>::identity()) {
-        return true;
+Matrix<T> Matrix<T>::inverse() const {
+    T det = this->determinant();
+    if (det == T(0)) {
+        throw std::runtime_error("Cannot invert matrix with determinant of 0.");
     }
 
-    return false;
+    // TODO: Complete implementation
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::transpose() const {
-    // TODO: Implement
+bool Matrix<T>::isIdentity() const {
+    Matrix<T> identity = Matrix<T>::identity();
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; i < 4; ++i) {
+            if (m[i][j] != identity.m[i][j]) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+template <typename T>
+Matrix<T> Matrix<T>::transpose() const {
+    Matrix<T> result;
+    for (int i = 0; i < 4; ++i) {
+        result.m[i][0] = m[0][i];
+        result.m[i][1] = m[1][i];
+        result.m[i][2] = m[2][i];
+        result.m[i][3] = m[3][i];
+    }
+
+    return result;
 }
 
 
@@ -73,17 +104,19 @@ const Matrix<T> Matrix<T>::transpose() const {
  */
 
 template <typename T>
-const Matrix<T> Matrix<T>::identity() {
-    return Matrix<T>(
+Matrix<T> Matrix<T>::identity() {
+    T values[4][4] = {
         {T(1), T(0), T(0), T(0)},
         {T(0), T(1), T(0), T(0)},
         {T(0), T(0), T(1), T(0)},
         {T(0), T(0), T(0), T(1)}
-    );
+    };
+
+    return Matrix<T>(values);
 }
 
 template <typename T>
-const Matrix<T> Matrix<T>::zero() {
+Matrix<T> Matrix<T>::zero() {
     return Matrix<T>();
 }
 
@@ -123,18 +156,19 @@ void Matrix<T>::setRow(int index, const Vector4<T>& vector) {
     this->m[index][3] = vector.w;
 }
 
+template <typename T>
 std::string Matrix<T>::toString() {
-    std::string str = "";
+    std::string str;
     for (int i = 0; i < 4; ++i) {
-        str += getRow(i).toString() + "\n";
+        str += Matrix<T>::getRow(i).toString() + "\n";
     }
 
     return str;
 }
 
+template <typename T>
 bool Matrix<T>::isValidTransform() {
     // TODO: Implement
-    return
 }
 
 /**

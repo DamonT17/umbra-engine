@@ -12,9 +12,11 @@
 
 /**
  * @struct Matrix
- * @brief TODO: Add brief
+ * @brief A standard 4x4 transformation matrix. The matrix is stored in row-major order (i.e., the position of a
+ * transformation matrix is in the last row and the first three rows contain the x, y, and z axes).
  *
- * @details TODO: Add details
+ * @details A transformation matrix can perform arbitrary linear 3D transformations (i.e., translation, rotation, scale,
+ * shear etc.) and perspective transformations using homogenous coordinates.
  */
 
 template <typename T>
@@ -31,47 +33,6 @@ struct Matrix {
     T m[4][4];
 
 /**
- * @section Properties
- * @subsection Instance properties (read-only)
- */
-
-    /**
-     * @property determinant
-     * @brief Returns the determinant of this matrix (read-only).
-     * @return T
-     *
-     * @details You cannot invert matrices with a determinant of 0.
-     */
-    const T determinant() const;
-
-    /**
-     * @property inverse
-     * @brief Returns the inverse of this matrix (read-only).
-     * @return Matrix<T>
-     *
-     * @details Inverted matrix multiplied by original matrix should equal identity matrix.
-     */
-    const Matrix<T> inverse() const;
-
-    /**
-     * @property isIdentity
-     * @brief Returns true if the matrix is an identity matrix (read-only).
-     * @return bool
-     *
-     * @details Identity matrix is a matrix with 1's on the diagonal and 0's everywhere else.
-     */
-    const bool isIdentity() const;
-
-    /**
-     * @property transpose
-     * @brief Returns the transpose of this matrix (read-only).
-     * @return Matrix<T>
-     *
-     * @details The transpose of a matrix is the matrix flipped over its main diagonal.
-     */
-    const Matrix<T> transpose() const;
-
-/**
  * @section Constructors
  */
 
@@ -81,14 +42,56 @@ struct Matrix {
     Matrix<T>();
 
     /**
-     * @brief Creates a new matrix and sets all elements to the given value.
+     * @brief Creates a new matrix and copies the values from the given matrix.
      */
-    Matrix<T>(const T value);
+    Matrix<T>(const Matrix<T>& other);
 
     /**
-     * @brief Creates a new matrix and sets all elements to the given values in the 2D array.
+     * @brief Creates a new matrix and sets each row to the given x, y, z, and w vectors.
      */
-    Matrix<T>(const T values[4][4]);
+    explicit Matrix<T>(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w);
+
+/**
+ * @section Properties
+ * @subsection Instance properties (read-only)
+ */
+
+    /**
+     * @property determinant
+     * @brief Returns the determinant of this matrix (read-only).
+     * @return T
+     *
+     * @details Matrices with a determinant of 0 cannot be inverted.
+     */
+    T determinant() const;
+
+    /**
+     * @property inverse
+     * @brief Returns the inverse of this matrix (read-only).
+     * @return Matrix<T>
+     *
+     * @details Inverted matrix multiplied by original matrix should equal identity matrix. Matrices with a determinant
+     * of 0 cannot be inverted. If the matrix is not invertible, Matrix<T>::zero() is returned.
+     */
+    Matrix<T> inverse() const;
+
+    /**
+     * @property isIdentity
+     * @brief Returns true if the matrix is an identity matrix (read-only).
+     * @return bool
+     *
+     * @details Identity matrix is a matrix with 1's on the diagonal and 0's everywhere else.
+     */
+    bool isIdentity() const;
+
+    /**
+     * @property transpose
+     * @brief Returns the transpose of this matrix (read-only).
+     * @return Matrix<T>
+     *
+     * @details The transpose of a matrix is the matrix flipped over its main diagonal.
+     */
+    Matrix<T> transpose() const;
 
 /**
  * @section Properties
@@ -100,14 +103,14 @@ struct Matrix {
      * @brief Returns the identity matrix (read-only).
      * @return Matrix<T>
      */
-    static const Matrix<T> identity();
+    static Matrix<T> identity();
 
     /**
      * @property zero
      * @brief Returns the zero matrix (read-only).
      * @return Matrix<T>
      */
-    static const Matrix<T> zero();
+    static Matrix<T> zero();
 
 /**
  * @section Methods
@@ -258,11 +261,11 @@ struct Matrix {
     Matrix<T>& operator*(const Matrix<T>& other) const;
 
     /**
-     * @brief Transforms a vector by a matrix.
+     * @brief Transforms a matrix by a vector.
      * @param vector The vector to transform.
-     * @return Matrix<T>
+     * @return Vector4<T>
      */
-    Matrix<T>& operator*(const Vector4<T>& vector) const;
+    Vector4<T> operator*(const Vector4<T>& vector) const;
 };
 
 #endif //UMBRA_ENGINE_MATRIX_H

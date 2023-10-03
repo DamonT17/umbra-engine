@@ -58,7 +58,7 @@ struct Vector4 {
     *
     * @details The length of the vector is the square root of (x*x+y*y+z*z+w*w).
     */
-   const T magnitude() const;
+   T magnitude() const;
 
    /**
     * @property sqrMagnitude
@@ -68,7 +68,7 @@ struct Vector4 {
     * @details This property is calculated using the formula (x*x+y*y+z*z+w*w). This property is faster than
     * calculating the magnitude because it avoids calculating a square root.
     */
-   const T sqrMagnitude() const;
+   T sqrMagnitude() const;
 
    /**
     * @property normalized
@@ -79,7 +79,7 @@ struct Vector4 {
     * is unchanged and a new normalized vector is returned. If you want to normalize the current vector, use Normalize
     * function.
     */
-   const Vector4<T> normalized() const;
+   Vector4<T> normalized() const;
 
 /**
  * @section Constructors

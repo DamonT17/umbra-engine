@@ -26,17 +26,17 @@ Vector4<T>::Vector4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {}
  */
 
 template <typename T>
-const T Vector4<T>::magnitude() const {
+T Vector4<T>::magnitude() const {
     return std::sqrt(x * x + y * y + z * z + w * w);
 }
 
 template <typename T>
-const T Vector4<T>::sqrMagnitude() const {
+T Vector4<T>::sqrMagnitude() const {
     return x * x + y * y + z * z + w * w;
 }
 
 template <typename T>
-const Vector4<T> Vector4<T>::normalized() const {
+Vector4<T> Vector4<T>::normalized() const {
     T magnitude = this->magnitude();
     return Vector4<T>(x / magnitude, y / magnitude, z / magnitude, w / magnitude);
 }

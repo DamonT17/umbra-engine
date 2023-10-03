@@ -20,17 +20,17 @@ Vector2<T>::Vector2(T x, T y) : x(x), y(y) {}
  */
 
 template <typename T>
-const T Vector2<T>::magnitude() const {
+T Vector2<T>::magnitude() const {
     return std::sqrt(x * x + y * y);
 }
 
 template <typename T>
-const T Vector2<T>::sqrMagnitude() const {
+T Vector2<T>::sqrMagnitude() const {
     return x * x + y * y;
 }
 
 template <typename T>
-const Vector2<T> Vector2<T>::normalized() const {
+Vector2<T> Vector2<T>::normalized() const {
     T magnitude = this->magnitude();
     return Vector2<T>(x / magnitude, y / magnitude);
 }
@@ -199,7 +199,7 @@ Vector2<T> Vector2<T>::Scale(const Vector2<T>& a, const Vector2<T>& b) {
 template <typename T>
 T Vector2<T>::SignedAngle(const Vector2<T>& from, const Vector2<T>& to, const Vector2<T>& axis) {
     T angle = Vector2<T>::Angle(from, to);
-    T sign = Vector2<T>::Dot(axis, Vector2<T>::Cross(from, to)) < T(0) ? T(-1) : T(1);
+    T sign = Vector2<T>::Dot(axis, Vector2<T>::Perpendicular(from)) < T(0) ? T(-1) : T(1);
     return angle * sign;
 }
 
@@ -207,6 +207,8 @@ template <typename T>
 Vector2<T> Vector2<T>::SmoothDamp(const Vector2<T>& current, const Vector2<T>& target, Vector2<T>& currentVelocity,
                                   T smoothTime, T maxSpeed, float deltaTime) {
     // TODO: Implement this
+
+    return Vector2<T>();
 }
 
 /**

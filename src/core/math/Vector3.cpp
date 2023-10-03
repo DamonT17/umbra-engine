@@ -23,17 +23,17 @@ Vector3<T>::Vector3(T x, T y, T z) : x(x), y(y), z(z) {}
  */
 
 template <typename T>
-const T Vector3<T>::magnitude() const {
+T Vector3<T>::magnitude() const {
     return std::sqrt(x * x + y * y + z * z);
 }
 
 template <typename T>
-const T Vector3<T>::sqrMagnitude() const {
+T Vector3<T>::sqrMagnitude() const {
     return x * x + y * y + z * z;
 }
 
 template <typename T>
-const Vector3<T> Vector3<T>::normalized() const {
+Vector3<T> Vector3<T>::normalized() const {
     T magnitude = this->magnitude();
     return Vector3<T>(x / magnitude, y / magnitude, z / magnitude);
 }

@@ -33,6 +33,25 @@ struct Matrix {
     T m[4][4];
 
 /**
+ * @section Constructors
+ */
+
+    /**
+     * @brief Creates a new matrix and sets all elements to 0.
+     */
+    Matrix<T>();
+
+    /**
+     * @brief Creates a new matrix and copies the values from the given matrix.
+     */
+    Matrix<T>(const Matrix<T>& other);
+
+    /**
+     * @brief Creates a new matrix and sets each row to the given x, y, z, and w vectors.
+     */
+    explicit Matrix<T>(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w);
+
+/**
  * @section Properties
  * @subsection Instance properties (read-only)
  */
@@ -42,7 +61,7 @@ struct Matrix {
      * @brief Returns the determinant of this matrix (read-only).
      * @return T
      *
-     * @details You cannot invert matrices with a determinant of 0.
+     * @details Matrices with a determinant of 0 cannot be inverted.
      */
     T determinant() const;
 
@@ -51,7 +70,8 @@ struct Matrix {
      * @brief Returns the inverse of this matrix (read-only).
      * @return Matrix<T>
      *
-     * @details Inverted matrix multiplied by original matrix should equal identity matrix.
+     * @details Inverted matrix multiplied by original matrix should equal identity matrix. Matrices with a determinant
+     * of 0 cannot be inverted. If the matrix is not invertible, Matrix<T>::zero() is returned.
      */
     Matrix<T> inverse() const;
 
@@ -72,35 +92,6 @@ struct Matrix {
      * @details The transpose of a matrix is the matrix flipped over its main diagonal.
      */
     Matrix<T> transpose() const;
-
-/**
- * @section Constructors
- */
-
-    /**
-     * @brief Creates a new matrix and sets all elements to 0.
-     */
-    Matrix<T>();
-
-    /**
-     * @brief Creates a new matrix and sets all elements to the given value.
-     */
-    explicit Matrix<T>(T value);
-
-    /**
-     * @brief Creates a new matrix and sets all elements to the given values in the 2D array.
-     */
-    explicit Matrix<T>(const T values[4][4]);
-
-    /**
-     * @brief Creates a new matrix and sets each row to the given x, y, z, and w vectors.
-     */
-    explicit Matrix<T>(const Vector4<T>& x, const Vector4<T>& y, const Vector4<T>& z, const Vector4<T>& w);
-
-    /**
-     * @brief Creates a new matrix and copies the values from the given matrix.
-     */
-    Matrix<T>(const Matrix<T>& other);
 
 /**
  * @section Properties
@@ -270,11 +261,11 @@ struct Matrix {
     Matrix<T>& operator*(const Matrix<T>& other) const;
 
     /**
-     * @brief Transforms a vector by a matrix.
+     * @brief Transforms a matrix by a vector.
      * @param vector The vector to transform.
-     * @return Matrix<T>
+     * @return Vector4<T>
      */
-    Matrix<T>& operator*(const Vector4<T>& vector) const;
+    Vector4<T> operator*(const Vector4<T>& vector) const;
 };
 
 #endif //UMBRA_ENGINE_MATRIX_H

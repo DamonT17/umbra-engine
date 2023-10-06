@@ -22,6 +22,7 @@ struct Vector4 {
  * @section Properties
  * @subsection Instance properties
  */
+
    /**
     * @property x
     * @brief X component of the vector.

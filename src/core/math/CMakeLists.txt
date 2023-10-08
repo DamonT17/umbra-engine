@@ -1,6 +1,8 @@
 add_library(math
     Matrix.cpp
     Matrix.h
+    Quaternion.cpp
+    Quaternion.h
     Vector2.cpp
     Vector2.h
     Vector3.cpp

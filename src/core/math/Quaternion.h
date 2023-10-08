@@ -5,6 +5,8 @@
 #ifndef UMBRAENGINE_QUATERNION_H
 #define UMBRAENGINE_QUATERNION_H
 
+#include <cmath>
+
 #include "Vector3.h"
 
 /**
@@ -78,6 +80,15 @@ struct Quaternion {
  * @section Properties
  * @subsection Instance properties (read-only)
  */
+
+    /**
+     * @property magnitude
+     * @brief Returns the length of this quaternion (read-only).
+     * @return T
+     *
+     * @details The length of the vector is the square root of (x*x+y*y+z*z+w*w).
+     */
+    T magnitude() const;
 
     /**
      * @property normalized
@@ -155,7 +166,7 @@ struct Quaternion {
     static T Dot(const Quaternion<T>& a, const Quaternion<T>& b);
 
     /**
-     * @brief Returns the euler angle representation of a rotation.
+     * @brief Returns the euler angle representation of a rotation in XYZ convention.
      * @param x The x component of the euler angles.
      * @param y The y component of the euler angles.
      * @param z The z component of the euler angles.
@@ -283,6 +294,13 @@ struct Quaternion {
     Quaternion<T> operator-() const;
 
     /**
+     * @brief Multiplies this quaternion by a scalar.
+     * @param scalar The scalar to multiply by.
+     * @return Quaternion<T>
+     */
+    Quaternion<T> operator*(T scalar) const;
+
+    /**
      * @brief Multiplies two quaternions.
      * @param other The quaternion to multiply by.
      * @return Quaternion<T>
@@ -328,6 +346,25 @@ struct Quaternion {
      */
     bool operator!=(const Quaternion<T>& other) const;
 
+    /**
+    * @brief Returns the component at the given index.
+    * @param index The index of the component to return.
+    * @return T
+    * @throws std::out_of_range
+    *
+    * @details The index is zero-based, so valid values are 0, 1, 2, and 3.
+    */
+    T& operator[](int index);
+
+    /**
+     * @brief Returns the component at the given index.
+     * @param index The index of the component to return.
+     * @return T
+     * @throws std::out_of_range
+     *
+     * @details The index is zero-based, so valid values are 0, 1, 2, and 3.
+     */
+    const T& operator[](int index) const;
 };
 
 /**

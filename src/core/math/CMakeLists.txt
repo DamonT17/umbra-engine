@@ -3,6 +3,10 @@ add_library(math
     Matrix.h
     Quaternion.cpp
     Quaternion.h
+    Ray.cpp
+    Ray.h
+    Ray2.cpp
+    Ray2.h
     Vector2.cpp
     Vector2.h
     Vector3.cpp

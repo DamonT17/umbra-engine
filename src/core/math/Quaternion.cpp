@@ -308,4 +308,3 @@ const T& Quaternion<T>::operator[](int index) const {
 
 template struct Quaternion<float>;
 template struct Quaternion<double>;
-template struct Quaternion<long double>;

@@ -1,6 +1,8 @@
 add_library(math
     Matrix.cpp
     Matrix.h
+    Plane.cpp
+    Plane.h
     Quaternion.cpp
     Quaternion.h
     Ray.cpp

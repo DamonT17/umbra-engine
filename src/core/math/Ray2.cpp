@@ -9,7 +9,7 @@
  */
 
 template <typename T>
-Ray2<T>::Ray2() : direction(Vector2<T>::Forward()), origin(Vector2<T>::Zero()) {}
+Ray2<T>::Ray2() : direction(Vector2<T>::Up()), origin(Vector2<T>::Zero()) {}
 
 template <typename T>
 Ray2<T>::Ray2(const Vector2<T>& origin, const Vector2<T>& direction, bool directionIsNormalized) {
@@ -34,10 +34,17 @@ T Ray2<T>::distanceToPoint(const Vector2<T>& point) const {
 
 template <typename T>
 T Ray2<T>::squaredDistanceToPoint(const Vector2<T>& point) const {
-    return (point - origin).squaredMagnitude();
+    return (point - origin).sqrMagnitude();
 }
 
 template <typename T>
 std::string Ray2<T>::toString() const {
     return "Ray(" + origin.toString() + ", " + direction.toString() + ")";
 }
+
+/**
+* @section Template instantiations
+*/
+
+template struct Ray2<float>;
+template struct Ray2<double>;

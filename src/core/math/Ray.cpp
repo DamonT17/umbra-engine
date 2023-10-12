@@ -34,10 +34,17 @@ T Ray<T>::distanceToPoint(const Vector3<T>& point) const {
 
 template <typename T>
 T Ray<T>::squaredDistanceToPoint(const Vector3<T>& point) const {
-    return (point - origin).squaredMagnitude();
+    return (point - origin).sqrMagnitude();
 }
 
 template <typename T>
 std::string Ray<T>::toString() const {
     return "Ray(" + origin.toString() + ", " + direction.toString() + ")";
 }
+
+/**
+* @section Template instantiations
+*/
+
+template struct Ray<float>;
+template struct Ray<double>;

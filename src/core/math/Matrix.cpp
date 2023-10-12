@@ -339,4 +339,3 @@ Vector4<T> Matrix<T>::operator*(const Vector4<T>& vector) const {
 
 template struct Matrix<float>;
 template struct Matrix<double>;
-template struct Matrix<long double>;

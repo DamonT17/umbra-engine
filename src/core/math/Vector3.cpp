@@ -377,4 +377,3 @@ Vector3<T> operator*(T scalar, const Vector3<T>& a) {
 
 template struct Vector3<float>;
 template struct Vector3<double>;
-template struct Vector3<long double>;

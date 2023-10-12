@@ -314,4 +314,3 @@ Vector2<T> operator*(T scalar, const Vector2<T>& a) {
 
 template struct Vector2<float>;
 template struct Vector2<double>;
-template struct Vector2<long double>;

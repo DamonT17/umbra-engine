@@ -2,20 +2,19 @@
 // Created by Damon Tregear on 10/12/23.
 //
 
-#include <memory>
-
 #include "StackAllocator.h"
 
-StackAllocator::StackAllocator(size_t size) : Allocator(size) {
-    maxSize = size;
-    marker = 0;
+StackAllocator::StackAllocator(size_t stackSize) : Allocator(stackSize) {
+    memoryBlock = new char[stackSize];
+    maxSize = stackSize;
     markerIndex = 0;
 
     memset(&markers, 0, sizeof(size_t) * kMaxAllocations);
 }
 
 StackAllocator::~StackAllocator() {
-    assert(markerIndex == 0 && marker == 0);
+    assert(markerIndex == 0 && GetCurrentMarker() == 0);
+    delete[] memoryBlock;
 }
 
 void* StackAllocator::Allocate(size_t size, Alignment alignment) {
@@ -35,20 +34,31 @@ void* StackAllocator::Allocate(size_t size, Alignment alignment) {
     return memoryBlock + GetCurrentMarker();
 }
 
-void StackAllocator::Deallocate(void* ptr) {
-    if (markerIndex == 0) {
-        return;
-    }
+void StackAllocator::Deallocate(void *ptr) {
+    assert(ptr >= memoryBlock && ptr <= memoryBlock + maxSize);
 
-    // TODO
+    size_t marker = reinterpret_cast<char*>(ptr) - memoryBlock;
+
+    // Zero the memory
+    memset(memoryBlock + marker, 0, maxSize - marker);
+
+    // Reset the marker
+    while (markerIndex > 0 && markers[markerIndex - 1] >= marker) {
+        --markerIndex;
+    }
 }
 
 void StackAllocator::Rollback(void* ptr) {
+    assert(ptr >= memoryBlock && ptr <= memoryBlock + maxSize);
 
+    size_t marker = reinterpret_cast<char*>(ptr) - memoryBlock;
+    while (markerIndex > 0 && markers[markerIndex - 1] > marker) {
+        --markerIndex;
+    }
 }
 
 void StackAllocator::Clear() {
-
+    markerIndex = 0;
 }
 
 size_t StackAllocator::GetCurrentMarker() const {

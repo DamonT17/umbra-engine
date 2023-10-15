@@ -78,7 +78,7 @@ public:
     /**
      * @brief Destroys the allocator.
      */
-    virtual ~Allocator() {}
+    virtual ~Allocator() = default;
 
 /**
  * @section Methods

@@ -4,34 +4,33 @@
 
 #include "StackAllocator.h"
 
-StackAllocator::StackAllocator(size_t stackSize) : Allocator(stackSize) {
-    memoryBlock = new char[stackSize];
-    maxSize = stackSize;
+StackAllocator::StackAllocator(size_t size) : Allocator(size) {
+    memoryBlock = reinterpret_cast<char*>(malloc(size));
+    maxSize = size;
     markerIndex = 0;
 
     memset(&markers, 0, sizeof(size_t) * kMaxAllocations);
 }
 
 StackAllocator::~StackAllocator() {
-    assert(markerIndex == 0 && GetCurrentMarker() == 0);
-    delete[] memoryBlock;
+    free(memoryBlock);
 }
 
 void* StackAllocator::Allocate(size_t size, Alignment alignment) {
     // Out of memory
-    if (GetCurrentMarker() + size > maxSize) {
+    if (GetMarker() + size > maxSize) {
         return nullptr;
     }
 
     // Calculate the next marker
-    size_t nextMarker = GetCurrentMarker() + size;
+    size_t nextMarker = GetMarker() + size;
 
     // Align the memory
     char* alignedAddress = AlignPointer<char>(memoryBlock + nextMarker, alignment);
     nextMarker = alignedAddress - memoryBlock;
     markers[markerIndex++] = nextMarker;
 
-    return memoryBlock + GetCurrentMarker();
+    return memoryBlock + GetMarker();
 }
 
 void StackAllocator::Deallocate(void *ptr) {
@@ -61,7 +60,7 @@ void StackAllocator::Clear() {
     markerIndex = 0;
 }
 
-size_t StackAllocator::GetCurrentMarker() const {
+size_t StackAllocator::GetMarker() const {
     if (markerIndex == 0) {
         return 0;
     }

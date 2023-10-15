@@ -27,9 +27,9 @@ public:
 
     /**
      * @brief Creates a new stack allocator with the given size.
-     * @param stackSize The size of the stack allocator.
+     * @param size The size of the stack allocator.
      */
-    explicit StackAllocator(size_t stackSize);
+    explicit StackAllocator(size_t size);
 
     /**
      * @brief Destroys the stack allocator.
@@ -47,7 +47,7 @@ public:
      * @param alignment The alignment of the block of memory to allocate.
      * @return A pointer to the allocated block of memory.
      */
-    void* Allocate(size_t size, Alignment alignment) override;
+    void* Allocate(size_t size, Alignment alignment = kALIGN_8) override;
 
     /**
      * @brief Deallocates the given block of memory.
@@ -67,11 +67,29 @@ public:
     void Clear();
 
 private:
+    /**
+     * @brief The maximum number of allocations that can be tracked by the stack allocator.
+     */
     static const uint32_t kMaxAllocations = 256;
+
+    /**
+     * @brief The current marker of the stack.
+     */
     uint32_t markerIndex;
+
+    /**
+     * @brief The maximum size of the stack allocator.
+     */
     size_t maxSize;
+
+    /**
+     * @brief An array used to store markers for tracking memory allocations.
+     */
     size_t markers[kMaxAllocations];
 
+    /**
+     * @brief A pointer to the memory block managed by the stack allocator.
+     */
     char* memoryBlock;
 
 /**
@@ -83,7 +101,7 @@ private:
      * @brief Gets the current marker of the stack.
      * @return The current top of the stack.
      */
-    size_t GetCurrentMarker() const;
+    size_t GetMarker() const;
 };
 
 #endif //UMBRAENGINE_STACKALLOCATOR_H

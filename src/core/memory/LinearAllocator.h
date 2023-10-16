@@ -64,12 +64,12 @@ public:
  */
 
     /**
-     * @brief Allocates memory of the given size and alignment.
-     * @param size The size of the allocation.
+     * @brief Allocates memory of the given sizeBytes and alignment.
+     * @param sizeBytes The sizeBytes of the allocation.
      * @param alignment The alignment of the allocation.
      * @return A pointer to the allocated memory.
      */
-    void* Allocate(const size_t& size, Alignment alignment) override;
+    void* Allocate(const size_t& sizeBytes, Alignment alignment) override;
 
     /**
      * @brief Frees the given block of memory.
@@ -78,12 +78,6 @@ public:
      * @details This method is not supported by the linear allocator. Instead, use Rollback() or Clear() to free memory.
      */
     void Free(void* ptr) noexcept final;
-
-    /**
-     * @brief Frees all memory allocated after the given marker.
-     * @param marker The marker to rollback to.
-     */
-    virtual void Rollback(void* marker) noexcept = 0;
 
     /**
      * @brief Frees all memory allocated by the allocator.

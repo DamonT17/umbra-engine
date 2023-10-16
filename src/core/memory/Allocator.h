@@ -20,31 +20,12 @@
  * @details This enumeration provides a list of possible alignments for memory allocations. It is used by allocators to
  * determine how to align memory allocations.
  */
-enum Alignment : uint32_t {
-    kALIGN_NONE = 0x00,
+enum Alignment : uint8_t {
     kALIGN_4 = 0x04,
     kALIGN_8 = 0x08,
     kALIGN_16 = 0x10,
     kALIGN_32 = 0x20
 };
-
-/**
- * @brief Calculates the adjustment needed to align the given address to the given alignment.
- * @param address The address to align.
- * @param alignment The alignment to align the address to.
- * @return The adjustment needed to align the given address to the given alignment.
- */
-inline size_t AlignAddressAdjustment(uintptr_t address, Alignment alignment) {
-    const size_t mask = alignment - 1u;
-    assert((alignment & mask) == 0);    // Power of 2
-    size_t adjustment = alignment - (address & mask);
-
-    if (adjustment == alignment) {
-        adjustment = 0;
-    }
-
-    return adjustment;
-}
 
 /**
  * @brief Aligns the given address to the given alignment.
@@ -57,6 +38,46 @@ inline uintptr_t AlignAddress(uintptr_t address, Alignment alignment) {
     assert((alignment & mask) == 0);    // Power of 2
 
     return address + mask & ~mask;
+}
+
+/**
+ * @brief Calculates the adjustment needed to align the given address to the given alignment.
+ * @param address The address to align.
+ * @param alignment The alignment to align the address to.
+ * @return The adjustment needed to align the given address to the given alignment.
+ */
+inline uint8_t AlignAddressAdjustment(uintptr_t address, Alignment alignment) {
+    const size_t mask = alignment - 1u;
+    assert((alignment & mask) == 0);    // Power of 2
+
+    uint8_t adjustment = alignment - (address & mask);
+    if (adjustment == alignment) {
+        return 0;
+    }
+
+    return adjustment;
+}
+
+/**
+ * @brief Calculates the adjustment needed to align the given address to the given alignment and header size.
+ * @param address The address to align.
+ * @param alignment The alignment to align the address to.
+ * @param headerSize The size of the header.
+ * @return The adjustment needed to align the given address to the given alignment and header size.
+ */
+inline uint8_t AlignAddressAdjustmentWithHeader(uintptr_t address, Alignment alignment, uint8_t headerSize) {
+    uint8_t adjustment = AlignAddressAdjustment(address, alignment);
+    uint8_t neededSpace = headerSize;
+    if (adjustment < neededSpace) {
+        neededSpace -= adjustment;
+        adjustment += alignment * (neededSpace / alignment);
+
+        if (neededSpace % alignment > 0) {
+            adjustment += alignment;
+        }
+    }
+
+    return adjustment;
 }
 
 /**
@@ -152,6 +173,9 @@ public:
      */
     virtual ~Allocator() noexcept {
         assert(numAllocations == 0 && usedBytes == 0);
+
+        start = nullptr;
+        size = 0;
     }
 
 /**

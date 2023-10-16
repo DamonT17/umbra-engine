@@ -35,12 +35,12 @@ StackAllocator::~StackAllocator() {
     start = nullptr;
 }
 
-// TODO: Verify implementation
 void* StackAllocator::Allocate(const size_t& sizeBytes, Alignment alignment) {
     assert(sizeBytes > 0 && alignment > 0);
 
     // Calculate adjustment needed for alignment
-    const size_t adjustment = AlignAddressAdjustment(reinterpret_cast<uintptr_t>(position), alignment);
+    const uint8_t adjustment = AlignAddressAdjustmentWithHeader(reinterpret_cast<uintptr_t>(position), alignment,
+                                                                sizeof(Header));
 
     // Out of memory
     if (usedBytes + sizeBytes + adjustment > size) {
@@ -50,12 +50,15 @@ void* StackAllocator::Allocate(const size_t& sizeBytes, Alignment alignment) {
     // Align the memory
     void* alignedPosition = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(position) + adjustment);
 
-    // Update position and usedBytes
+    // Add the Allocation Header
+    Header* header = reinterpret_cast<Header*>(reinterpret_cast<uintptr_t>(alignedPosition) - sizeof(Header));
+    header->adjustment = adjustment;
+    header->prevAddress = prevPosition;
+    prevPosition = alignedPosition;
+
     position = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(alignedPosition) + sizeBytes);
     usedBytes += sizeBytes + adjustment;
-
-    // Update markers
-    markers[numAllocations++] = usedBytes;
+    numAllocations++;
 
     return alignedPosition;
 }
@@ -69,9 +72,11 @@ void StackAllocator::FreeLastBlock() noexcept {
         return;
     }
 
+    Header* header = reinterpret_cast<Header*>(reinterpret_cast<uintptr_t>(prevPosition) - sizeof(Header));
+    usedBytes -= reinterpret_cast<uintptr_t>(position) - reinterpret_cast<uintptr_t>(prevPosition) + header->adjustment;
+    position = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(prevPosition) - header->adjustment);
+    prevPosition = header->prevAddress;
     numAllocations--;
-    position = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(start) + markers[numAllocations]);
-    usedBytes = markers[numAllocations];
 }
 
 void StackAllocator::Clear() noexcept {

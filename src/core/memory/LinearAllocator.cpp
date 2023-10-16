@@ -26,26 +26,29 @@ LinearAllocator::~LinearAllocator() noexcept {
     start = nullptr;
 }
 
-void* LinearAllocator::Allocate(const size_t& size, Alignment alignment) {
-    assert(size > 0 && alignment > 0);
+void* LinearAllocator::Allocate(const size_t& sizeBytes, Alignment alignment) {
+    assert(sizeBytes > 0 && alignment > 0);
+
+    // Calculate adjustment needed for alignment
+    const uint8_t adjustment = AlignAddressAdjustment(reinterpret_cast<uintptr_t>(position), alignment);
+
+    // Out of memory
+    if (usedBytes + sizeBytes + adjustment > size) {
+        return nullptr;
+    }
 
     // Align the memory
-    position = AlignPointer(position, alignment);
-    usedBytes = reinterpret_cast<uintptr_t>(position) - reinterpret_cast<uintptr_t>(start);
-    ++numAllocations;
+    void* alignedPosition = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(position) + adjustment);
 
-    return position;
+    position = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(alignedPosition) + sizeBytes);
+    usedBytes += sizeBytes + adjustment;
+    numAllocations++;
+
+    return alignedPosition;
 }
 
 void LinearAllocator::Free(void* const ptr) noexcept {
-    assert(false && "Use Rollback() instead.");
-}
-
-void LinearAllocator::Rollback(void* const marker) noexcept {
-    assert(position >= marker && start <= marker);
-
-    position = marker;
-    usedBytes = reinterpret_cast<uintptr_t>(position) - reinterpret_cast<uintptr_t>(start);
+    assert(false && "Use Clear() instead.");
 }
 
 void LinearAllocator::Clear() noexcept {

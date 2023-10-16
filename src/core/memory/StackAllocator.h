@@ -104,19 +104,30 @@ public:
 
 private:
     /**
-     * @brief The maximum number of allocations that can be tracked by the stack allocator.
-     */
-    static const uint32_t kMaxAllocations = 256;
-
-    /**
-     * @brief An array used to store markers for tracking memory allocations.
-     */
-    size_t markers[kMaxAllocations];
-
-    /**
      * @brief The current top of the stack.
      */
     void* position;
+
+    /**
+     * @brief The previous top of the stack.
+     */
+    void* prevPosition;
+
+    /**
+     * @struct Header
+     * @brief The header for each allocation.
+     */
+    struct Header {
+        /**
+         * @brief The previous address.
+         */
+        void* prevAddress;
+
+        /**
+         * @brief The adjustment needed for alignment.
+         */
+        uint8_t adjustment;
+    };
 };
 
 #endif //UMBRAENGINE_STACKALLOCATOR_H

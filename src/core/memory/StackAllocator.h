@@ -27,14 +27,44 @@ public:
 
     /**
      * @brief Creates a new stack allocator with the given size.
-     * @param size The size of the stack allocator.
+     * @param sizeBytes The size of the stack allocator.
      */
-    explicit StackAllocator(size_t size);
+    explicit StackAllocator(size_t sizeBytes) noexcept;
 
     /**
-     * @brief Destroys the stack allocator.
+     * @brief Creates a new stack allocator with the given size and starting address.
+     * @param sizeBytes The size of the allocator.
+     * @param start The starting address of the allocator.
      */
-    ~StackAllocator() override;
+    StackAllocator(size_t sizeBytes, void* start) noexcept;
+
+    /**
+     * @brief Copy constructor is deleted.
+     */
+    StackAllocator(const StackAllocator&) = delete;
+
+    /**
+     * @brief Copy assignment operator is deleted.
+     */
+    StackAllocator& operator=(const StackAllocator&) = delete;
+
+    /**
+     * @brief Move constructor.
+     * @param other The stack allocator to move.
+     */
+    StackAllocator(StackAllocator&& other) noexcept;
+
+    /**
+     * @brief Move assignment operator.
+     * @param other The stack allocator to move.
+     * @return A reference to the stack allocator.
+     */
+    StackAllocator& operator=(StackAllocator&& other) noexcept;
+
+    /**
+     * @brief Destructor.
+     */
+    ~StackAllocator() noexcept override;
 
 /**
  * @section Methods
@@ -43,28 +73,34 @@ public:
 
     /**
      * @brief Allocates a block of memory of the given size and alignment.
-     * @param size The size of the block of memory to allocate.
+     * @param sizeBytes The size of the block of memory to allocate.
      * @param alignment The alignment of the block of memory to allocate.
      * @return A pointer to the allocated block of memory.
      */
-    void* Allocate(size_t size, Alignment alignment = kALIGN_8) override;
+    void* Allocate(const size_t& sizeBytes, Alignment alignment) override;
 
     /**
-     * @brief Deallocates the given block of memory.
-     * @param ptr A pointer to the block of memory to deallocate.
+     * @brief Frees the given block of memory and resets the marker.
+     * @param ptr A pointer to the block of memory to free.
      */
-    void Deallocate(void* ptr) override;
+    void Free(void* ptr) noexcept final;
 
     /**
-     * @brief Rolls the stack allocator back to the given marker.
-     * @param ptr A pointer to the position to roll back to.
+     * @brief Frees the last allocation and resets the marker.
      */
-    void Rollback(void* ptr);
+    void FreeLastBlock() noexcept;
 
     /**
      * @brief Clears the stack allocator.
      */
-    void Clear();
+    virtual void Clear() noexcept = 0;
+
+    /**
+     * @brief Gets the current marker of the stack.
+     * @return The current top of the stack.
+     */
+    [[nodiscard]]
+    void* GetPosition() const noexcept;
 
 private:
     /**
@@ -73,35 +109,14 @@ private:
     static const uint32_t kMaxAllocations = 256;
 
     /**
-     * @brief The current marker of the stack.
-     */
-    uint32_t markerIndex;
-
-    /**
-     * @brief The maximum size of the stack allocator.
-     */
-    size_t maxSize;
-
-    /**
      * @brief An array used to store markers for tracking memory allocations.
      */
     size_t markers[kMaxAllocations];
 
     /**
-     * @brief A pointer to the memory block managed by the stack allocator.
+     * @brief The current top of the stack.
      */
-    char* memoryBlock;
-
-/**
- * @section Methods
- * @subsection Private methods
- */
-
-    /**
-     * @brief Gets the current marker of the stack.
-     * @return The current top of the stack.
-     */
-    size_t GetMarker() const;
+    void* position;
 };
 
 #endif //UMBRAENGINE_STACKALLOCATOR_H

@@ -4,66 +4,82 @@
 
 #include "StackAllocator.h"
 
-StackAllocator::StackAllocator(size_t size) : Allocator(size) {
-    memoryBlock = reinterpret_cast<char*>(malloc(size));
-    maxSize = size;
-    markerIndex = 0;
+StackAllocator::StackAllocator(const size_t sizeBytes) noexcept : Allocator(sizeBytes) {
+    if (start != nullptr) {
+        free(start);
+    }
 
-    memset(&markers, 0, sizeof(size_t) * kMaxAllocations);
+    start = malloc(sizeBytes);
+    position = start;
+}
+
+StackAllocator::StackAllocator(size_t sizeBytes, void *start) noexcept :
+        Allocator(sizeBytes, start), position(start) {}
+
+StackAllocator::StackAllocator(StackAllocator&& other) noexcept :
+        Allocator(std::move(other)), position(other.position) {
+    other.position = nullptr;
+}
+
+StackAllocator& StackAllocator::operator=(StackAllocator&& other) noexcept {
+    Allocator::operator=(std::move(other));
+
+    position = other.position;
+    other.position = nullptr;
+
+    return *this;
 }
 
 StackAllocator::~StackAllocator() {
-    free(memoryBlock);
+    free(start);
+    start = nullptr;
 }
 
-void* StackAllocator::Allocate(size_t size, Alignment alignment) {
+// TODO: Verify implementation
+void* StackAllocator::Allocate(const size_t& sizeBytes, Alignment alignment) {
+    assert(sizeBytes > 0 && alignment > 0);
+
+    // Calculate adjustment needed for alignment
+    const size_t adjustment = AlignAddressAdjustment(reinterpret_cast<uintptr_t>(position), alignment);
+
     // Out of memory
-    if (GetMarker() + size > maxSize) {
+    if (usedBytes + sizeBytes + adjustment > size) {
         return nullptr;
     }
 
-    // Calculate the next marker
-    size_t nextMarker = GetMarker() + size;
-
     // Align the memory
-    char* alignedAddress = AlignPointer<char>(memoryBlock + nextMarker, alignment);
-    nextMarker = alignedAddress - memoryBlock;
-    markers[markerIndex++] = nextMarker;
+    void* alignedPosition = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(position) + adjustment);
 
-    return memoryBlock + GetMarker();
+    // Update position and usedBytes
+    position = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(alignedPosition) + sizeBytes);
+    usedBytes += sizeBytes + adjustment;
+
+    // Update markers
+    markers[numAllocations++] = usedBytes;
+
+    return alignedPosition;
 }
 
-void StackAllocator::Deallocate(void *ptr) {
-    assert(ptr >= memoryBlock && ptr <= memoryBlock + maxSize);
-
-    size_t marker = reinterpret_cast<char*>(ptr) - memoryBlock;
-
-    // Zero the memory
-    memset(memoryBlock + marker, 0, maxSize - marker);
-
-    // Reset the marker
-    while (markerIndex > 0 && markers[markerIndex - 1] >= marker) {
-        --markerIndex;
-    }
+void StackAllocator::Free(void* ptr) noexcept {
+    assert(false && "Use FreeLastBlock() instead.");
 }
 
-void StackAllocator::Rollback(void* ptr) {
-    assert(ptr >= memoryBlock && ptr <= memoryBlock + maxSize);
-
-    size_t marker = reinterpret_cast<char*>(ptr) - memoryBlock;
-    while (markerIndex > 0 && markers[markerIndex - 1] > marker) {
-        --markerIndex;
-    }
-}
-
-void StackAllocator::Clear() {
-    markerIndex = 0;
-}
-
-size_t StackAllocator::GetMarker() const {
-    if (markerIndex == 0) {
-        return 0;
+void StackAllocator::FreeLastBlock() noexcept {
+    if (numAllocations == 0) {
+        return;
     }
 
-    return markers[markerIndex - 1];
+    numAllocations--;
+    position = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(start) + markers[numAllocations]);
+    usedBytes = markers[numAllocations];
+}
+
+void StackAllocator::Clear() noexcept {
+    position = start;
+    usedBytes = 0;
+    numAllocations = 0;
+}
+
+void* StackAllocator::GetPosition() const noexcept {
+    return position;
 }

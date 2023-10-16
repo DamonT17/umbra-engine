@@ -29,13 +29,31 @@ enum Alignment : uint32_t {
 };
 
 /**
+ * @brief Calculates the adjustment needed to align the given address to the given alignment.
+ * @param address The address to align.
+ * @param alignment The alignment to align the address to.
+ * @return The adjustment needed to align the given address to the given alignment.
+ */
+inline size_t AlignAddressAdjustment(uintptr_t address, Alignment alignment) {
+    const size_t mask = alignment - 1u;
+    assert((alignment & mask) == 0);    // Power of 2
+    size_t adjustment = alignment - (address & mask);
+
+    if (adjustment == alignment) {
+        adjustment = 0;
+    }
+
+    return adjustment;
+}
+
+/**
  * @brief Aligns the given address to the given alignment.
  * @param address The address to align.
  * @param alignment The alignment to align the address to.
  * @return The aligned address.
  */
 inline uintptr_t AlignAddress(uintptr_t address, Alignment alignment) {
-    const size_t mask = alignment - 1;
+    const size_t mask = alignment - 1u;
     assert((alignment & mask) == 0);    // Power of 2
 
     return address + mask & ~mask;
@@ -71,14 +89,70 @@ public:
 
     /**
      * @brief Creates a new allocator with the given size.
-     * @param size The size of the allocator.
+     * @param sizeBytes The size of the allocator.
      */
-    explicit Allocator(size_t size) : size(size) {}
+    explicit Allocator(const size_t sizeBytes) noexcept :
+            size(sizeBytes), usedBytes(0), numAllocations(0), start(nullptr) {
+        assert(sizeBytes > 0);
+    }
+
+    /**
+     * @brief Creates a new allocator with the given size and starting address.
+     * @param sizeBytes The size of the allocator.
+     * @param start The starting address of the allocator.
+     */
+    Allocator(const size_t sizeBytes, void* const start) noexcept :
+            size(sizeBytes), usedBytes(0), numAllocations(0), start(start) {
+        assert(sizeBytes > 0);
+    }
+
+    /**
+     * @brief Copy constructor is deleted.
+     */
+    Allocator(const Allocator&) = delete;
+
+    /**
+     * @brief Copy assignment operator is deleted.
+     */
+    Allocator& operator=(const Allocator&) = delete;
+
+    /**
+     * @brief Move constructor.
+     * @param other The allocator to move.
+     */
+    Allocator(Allocator&& other) noexcept :
+            size(other.size), usedBytes(other.usedBytes), numAllocations(other.numAllocations), start(other.start) {
+        other.size = 0;
+        other.usedBytes = 0;
+        other.numAllocations = 0;
+        other.start = nullptr;
+    }
+
+    /**
+     * @brief Move assignment operator.
+     * @param other The allocator to move.
+     * @return A reference to the allocator.
+     */
+    Allocator& operator=(Allocator&& other) noexcept {
+        size = other.size;
+        usedBytes = other.usedBytes;
+        numAllocations = other.numAllocations;
+        start = other.start;
+
+        other.size = 0;
+        other.usedBytes = 0;
+        other.numAllocations = 0;
+        other.start = nullptr;
+
+        return *this;
+    }
 
     /**
      * @brief Destroys the allocator.
      */
-    virtual ~Allocator() = default;
+    virtual ~Allocator() noexcept {
+        assert(numAllocations == 0 && usedBytes == 0);
+    }
 
 /**
  * @section Methods
@@ -91,13 +165,44 @@ public:
      * @param alignment The alignment of the block of memory to allocate.
      * @return A pointer to the allocated block of memory.
      */
-    virtual void* Allocate(size_t size, Alignment alignment = kALIGN_NONE) = 0;
+    virtual void* Allocate(const size_t& size, Alignment alignment) = 0;
 
     /**
-     * @brief Deallocates the given block of memory.
-     * @param ptr A pointer to the block of memory to deallocate.
+     * @brief Frees the given block of memory.
      */
-    virtual void Deallocate(void* ptr) = 0;
+    virtual void Free(void* ptr) = 0;
+
+    /**
+     * @brief Gets the size of the allocator.
+     * @return The size of the allocator.
+     */
+    const size_t& GetSize() const noexcept {
+        return size;
+    }
+
+    /**
+     * @brief Gets the number of bytes used by the allocator.
+     * @return The number of bytes used by the allocator.
+     */
+    const size_t& GetUsed() const noexcept {
+        return usedBytes;
+    }
+
+    /**
+     * @brief Gets the number of allocations made by the allocator.
+     * @return The number of allocations made by the allocator.
+     */
+    const size_t& GetNumAllocations() const noexcept {
+        return numAllocations;
+    }
+
+    /**
+     * @brief Gets the starting address of the allocator.
+     * @return The starting address of the allocator.
+     */
+    const void* GetStart() const noexcept {
+        return start;
+    }
 
 protected:
 /**
@@ -106,10 +211,28 @@ protected:
  */
 
     /**
+     * @property start
+     * @brief The starting address of the allocator.
+     */
+    void* start;
+
+    /**
      * @property size
      * @brief The size of the allocator.
      */
     size_t size;
+
+    /**
+     * @property usedBytes
+     * @brief The number of bytes used by the allocator.
+     */
+    size_t usedBytes;
+
+    /**
+     * @property numAllocations
+     * @brief The number of allocations made by the allocator.
+     */
+    size_t numAllocations;
 };
 
 #endif //UMBRAENGINE_ALLOCATOR_H

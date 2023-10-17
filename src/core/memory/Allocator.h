@@ -8,6 +8,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 
 #define KB(x) ((uint64_t) x * (uint64_t) 0x400)
 #define MB(x) ((uint64_t) x * (uint64_t) 0x100000)

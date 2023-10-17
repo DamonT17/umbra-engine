@@ -5,9 +5,6 @@
 #ifndef UMBRAENGINE_STACKALLOCATOR_H
 #define UMBRAENGINE_STACKALLOCATOR_H
 
-#include <cstdint>
-#include <memory>
-
 #include "Allocator.h"
 
 /**

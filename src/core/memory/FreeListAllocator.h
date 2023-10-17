@@ -5,8 +5,6 @@
 #ifndef UMBRAENGINE_FREELISTALLOCATOR_H
 #define UMBRAENGINE_FREELISTALLOCATOR_H
 
-#include <memory>
-
 #include "Allocator.h"
 
 /**

@@ -104,16 +104,6 @@ public:
 
 private:
     /**
-     * @brief The current top of the stack.
-     */
-    void* position;
-
-    /**
-     * @brief The previous top of the stack.
-     */
-    void* prevPosition;
-
-    /**
      * @struct Header
      * @brief The header for each allocation.
      */
@@ -128,6 +118,16 @@ private:
          */
         uint8_t adjustment;
     };
+
+    /**
+     * @brief The current top of the stack.
+     */
+    void* position;
+
+    /**
+     * @brief The previous top of the stack.
+     */
+    void* prevPosition;
 };
 
 #endif //UMBRAENGINE_STACKALLOCATOR_H

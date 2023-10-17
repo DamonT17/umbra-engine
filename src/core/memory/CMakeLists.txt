@@ -1,5 +1,7 @@
 add_library(memory
         Allocator.h
+        FreeListAllocator.cpp
+        FreeListAllocator.h
         LinearAllocator.cpp
         LinearAllocator.h
         MemoryArena.cpp

@@ -30,7 +30,7 @@ StackAllocator& StackAllocator::operator=(StackAllocator&& other) noexcept {
     return *this;
 }
 
-StackAllocator::~StackAllocator() {
+StackAllocator::~StackAllocator() noexcept {
     free(start);
     start = nullptr;
 }
@@ -50,7 +50,7 @@ void* StackAllocator::Allocate(const size_t& sizeBytes, Alignment alignment) {
     // Align the memory
     void* alignedPosition = reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(position) + adjustment);
 
-    // Add the Allocation Header
+    // Add the allocation header
     Header* header = reinterpret_cast<Header*>(reinterpret_cast<uintptr_t>(alignedPosition) - sizeof(Header));
     header->adjustment = adjustment;
     header->prevAddress = prevPosition;

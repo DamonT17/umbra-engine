@@ -5,6 +5,8 @@
 #ifndef UMBRAENGINE_CORE_H
 #define UMBRAENGINE_CORE_H
 
-//TODO: Add more includes
+namespace UmbraEngine::Core {
+    //TODO: Add more includes
+}
 
 #endif //UMBRAENGINE_CORE_H

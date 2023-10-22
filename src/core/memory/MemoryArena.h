@@ -7,6 +7,8 @@
 
 #include "Allocator.h"
 
+namespace UmbraEngine::Core::Memory {
 
+}
 
 #endif //UMBRAENGINE_MEMORYARENA_H

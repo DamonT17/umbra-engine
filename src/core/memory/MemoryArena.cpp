@@ -3,3 +3,7 @@
 //
 
 #include "MemoryArena.h"
+
+namespace UmbraEngine::Core::Memory {
+
+}

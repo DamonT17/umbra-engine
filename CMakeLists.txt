@@ -7,6 +7,7 @@ configure_file(src/config.h.in config.h)
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 
+add_subdirectory(src/adapters)
 add_subdirectory(src/core)
 
-target_link_libraries(${PROJECT_NAME} core)
+target_link_libraries(${PROJECT_NAME} adapters core)

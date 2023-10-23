@@ -1,5 +1,4 @@
 add_library(adapters
-        Adapters.h
         STLAdapter.cpp
         STLAdapter.h
 )

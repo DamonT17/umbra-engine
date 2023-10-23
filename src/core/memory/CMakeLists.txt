@@ -1,5 +1,4 @@
 add_library(memory
-        Memory.h
         Allocator.h
         FreeListAllocator.cpp
         FreeListAllocator.h

@@ -5,9 +5,9 @@
 #include "Matrix.h"
 
 namespace UmbraEngine::Core::Math {
-/**
+/******************************
  * @section Constructors
- */
+ *****************************/
     template<typename T>
     Matrix<T>::Matrix() {
         for (auto& i : m) {
@@ -30,10 +30,10 @@ namespace UmbraEngine::Core::Math {
         Matrix<T>::setRow(3, w);
     }
 
-/**
+/******************************
  * @section Properties
  * @subsection Instance properties
- */
+ *****************************/
     template<typename T>
     T Matrix<T>::determinant() const {
         T det = 0;
@@ -137,10 +137,10 @@ namespace UmbraEngine::Core::Math {
         return result;
     }
 
-/**
+/******************************
  * @section Properties
  * @subsection Static properties
- */
+ *****************************/
     template<typename T>
     Matrix<T> Matrix<T>::identity() {
         return Matrix<T>(
@@ -156,10 +156,10 @@ namespace UmbraEngine::Core::Math {
         return Matrix<T>();
     }
 
-/**
+/******************************
  * @section Methods
  * @subsection Public methods
- */
+ *****************************/
     template<typename T>
     Vector4<T> Matrix<T>::getColumn(int index) {
         return Vector4<T>(m[0][index], m[1][index], m[2][index], m[3][index]);
@@ -212,10 +212,10 @@ namespace UmbraEngine::Core::Math {
         return true;
     }
 
-/**
+/******************************
  * @section Methods
  * @subsection Static methods
- */
+ *****************************/
     template<typename T>
     bool Matrix<T>::InverseAffine(const Matrix<T>& input, Matrix<T>& result) {
         T det = input.determinant();
@@ -298,10 +298,10 @@ namespace UmbraEngine::Core::Math {
         );
     }
 
-/**
+/******************************
  * @section Operators
  * @subsection Instance operators
- */
+ *****************************/
     template<typename T>
     Matrix<T>& Matrix<T>::operator*(const Matrix<T>& other) const {
         Matrix<T> result = Matrix<T>();
@@ -327,9 +327,9 @@ namespace UmbraEngine::Core::Math {
         return result;
     }
 
-/**
+/******************************
 * @section Template instantiations
-*/
+*****************************/
     template struct Matrix<float>;
     template struct Matrix<double>;
 }

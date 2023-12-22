@@ -9,5 +9,6 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 
 add_subdirectory(src/adapters)
 add_subdirectory(src/core)
+add_subdirectory(src/data-structures)
 
-target_link_libraries(${PROJECT_NAME} adapters core)
+target_link_libraries(${PROJECT_NAME} adapters core data-structures)
